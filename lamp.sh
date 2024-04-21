@@ -7,7 +7,7 @@ DB_PASSWORD="laravel_password"
 
 # Update package lists
 update_packages() {
-    sudo apt update
+    sudo apt update -y
 }
 
 # Install Apache web server
