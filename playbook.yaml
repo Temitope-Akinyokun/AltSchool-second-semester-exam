@@ -1,0 +1,46 @@
+---
+- name: Execute local script on slave node
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create directory to store script
+      file:
+        path: /home/ansible/exam-project
+        state: directory
+        owner: ansible
+        group: ansible
+        mode: 0755
+
+    - name: Transfer local script to slave node
+      copy:
+        src: /home/vagrant/exam-project/lamp.sh
+        dest: /home/ansible/exam-project/lamp.sh
+        mode: 0755
+
+    - name: Execute script on slave node
+      shell: ./home/ansible/exam-project/lamp.sh
+      register: script_output
+
+- name: update and upgrade server
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update and upgrade server
+      apt: 
+        update_cache: yes
+        upgrade: yes
+
+- name: set cron job to check uptime of the server every 12 am
+  hosts: all
+  become: yes
+  tasks:
+    - name: set cron job to check uptime of the server every 12 am
+      cron:
+        name: set cron job to check uptime of the server every 12 am
+        minute: "0"
+        hour: "0"
+        day: "*"
+        month: "*"
+        weekday: "*"
+        job: "/usr/bin/uptime > /var/log/uptime_check.log 2>&1"
+        state: present
